@@ -78,7 +78,9 @@ blk_grps_2000 <- c(390950041001,390950038001)
 blk_grps_2010 <- c(2,3)
 
 #list of variables
-vars <- c("P0010001","P0030001")
+vars2000 <- c("P0010001", # total population
+              "P0030001" # some other variable
+              )
 
 blk2010data <- getCensus(name="sf1", 
                          vintage = 2000, 
