@@ -4,7 +4,8 @@ library(tidyverse)
 api_key = "b7da053b9e664586b9e559dba9e73780602f0aab"
 
 # list of blocks
-blks_2000 <- c(390950038001036,
+blks_2000 <- tribble(~fips,
+              390950038001036,
               390950038001037,
               390950038001038,
               390950038001039,
@@ -26,7 +27,8 @@ blks_2000 <- c(390950038001036,
               390950041001001,
               390950041001002)
 
-blks_2010 <- c(390950103002009,
+blks_2010 <- tribble(~fips,
+               390950103002009,
                390950103002010,
                390950103002030,
                390950103002039,
@@ -48,7 +50,8 @@ blks_2010 <- c(390950103002009,
                390950103003002,
                390950103003003
                )
-blks_1990 <- c(39095003800201,
+blks_1990 <- tribble(~fips,
+             39095003800201,
              39095003800202,
              39095003800203,
              39095003800204,
@@ -84,17 +87,61 @@ vars1990 <- as_tibble(listCensusMetadata(name = "sf1",
 )
 vars2000 <- as_tibble(listCensusMetadata(name = "sf1",
                                          vintage = 2000,
-                                         type = "variables")
+                                        type = "variables")
 )
-vars2010 <- as_tibble(listCensusMetadata(name = "sf1",
-                                         vintage = 2010,
-                                         type = "variables")
-              )
 
-blk2000data <- as_tibble(getCensus(name="sf1", 
-                         vintage = 2000, 
-                         vars = vars2000, 
-                         region = paste("block:",paste(substr(blks_2000[i],12,15),collapse = ','),sep = ""), 
-  ##regionin = paste("state:", substr(blks_2000[i],1,2),sep="")"+county:"substr(blks_2000[i],3,5)"+tract:"substr(blks_2000[i],6,11), 
-  regionin = paste("state:39+county:095+tract:",substr(blks_2000[i],6,11),collapse = ""),                        
-key= api_key))
+vars2010 <- tribble(~name,
+                      "P0010001", #Total population
+                      "P0030001", #Total Population
+                      "H0030001", #Housing Units
+                      "H0030002", #occupied housing units
+                      "H0030003", #vacant housing units
+                      "H0040004", #renter occupied units
+                      "H0070003", #householder not hispanic or latino who is white alone
+                      "H0110004" #population in renter occupied housing units
+                      )
+## Acquire and tidy 1990 block data
+blk1990data <- tibble()
+for (i in unique(substr(blks_1990$fips,6,11))){
+  temp <-as_tibble(getCensus(name="sf1", 
+                             vintage = 1990, 
+                             vars =  c("P0010001","P0030001"), 
+                             region = "block:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
+                             regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
+                             key = api_key ))
+  blk2000data <-rbind(blk2000data,temp)
+  
+}
+## filter blocks to only those in Middle Grounds District 
+filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
+
+
+## Acquire and tidy 2000 block data
+blk2000data <- tibble()
+for (i in unique(substr(blks_2000$fips,6,11))){
+  temp <-as_tibble(getCensus(name="sf1", 
+                             vintage = 2000, 
+                             vars =  c("P001001","P003001"), 
+                             region = "block:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
+                             regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
+                             key = api_key ))
+              blk2000data <-rbind(blk2000data,temp)
+  
+}
+## filter blocks to only those in Middle Grounds District 
+filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
+
+## Acquire and tidy 2010 block data
+blk2010data <- tibble()
+for (i in unique(substr(blks_2010$fips,6,11))){
+  temp <-as_tibble(getCensus(name="sf1", 
+                             vintage = 2010, 
+                             vars =  vars2010$name, 
+                             region = "block:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
+                             regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
+                             key = api_key ))
+  blk2010data <-rbind(blk2010data,temp)
+  
+}
+## filter blocks to only those in Middle Grounds District 
+blk2010data <- filter(unite(blk2010data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2010$fips)
