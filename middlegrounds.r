@@ -1,5 +1,5 @@
 library(censusapi)
-
+library(tidyverse)
 #api key
 api_key = "b7da053b9e664586b9e559dba9e73780602f0aab"
 
@@ -48,7 +48,7 @@ blks_2010 <- c(390950103002009,
                390950103003002,
                390950103003003
                )
-blks_1990 <- (39095003800201,
+blks_1990 <- c(39095003800201,
              39095003800202,
              39095003800203,
              39095003800204,
@@ -78,14 +78,23 @@ blk_grps_2000 <- c(390950041001,390950038001)
 blk_grps_2010 <- c(2,3)
 
 #list of variables
-vars2010 <- c("P0010001", # total population
-              "P0030001" # also total population
+vars1990 <- as_tibble(listCensusMetadata(name = "sf1",
+                                         vintage = 1990,
+                                         type = "variables")
+)
+vars2000 <- as_tibble(listCensusMetadata(name = "sf1",
+                                         vintage = 2000,
+                                         type = "variables")
+)
+vars2010 <- as_tibble(listCensusMetadata(name = "sf1",
+                                         vintage = 2010,
+                                         type = "variables")
               )
 
-blk2010data <- getCensus(name="sf1", 
+blk2000data <- as_tibble(getCensus(name="sf1", 
                          vintage = 2000, 
-                         vars = vars, 
+                         vars = vars2000, 
                          region = paste("block:",paste(substr(blks_2000[i],12,15),collapse = ','),sep = ""), 
   ##regionin = paste("state:", substr(blks_2000[i],1,2),sep="")"+county:"substr(blks_2000[i],3,5)"+tract:"substr(blks_2000[i],6,11), 
   regionin = paste("state:39+county:095+tract:",substr(blks_2000[i],6,11),collapse = ""),                        
-key= api_key)
+key= api_key))
