@@ -92,13 +92,72 @@ vars2000 <- as_tibble(listCensusMetadata(name = "sf1",
 
 vars2010 <- tribble(~name,
                       "P0010001", #Total population
-                      "P0030001", #Total Population
+                      "P0030002", #Total Population
                       "H0030001", #Housing Units
                       "H0030002", #occupied housing units
                       "H0030003", #vacant housing units
                       "H0040004", #renter occupied units
                       "H0070003", #householder not hispanic or latino who is white alone
-                      "H0110004" #population in renter occupied housing units
+                      "H0110004", #population in renter occupied housing units
+                      "H0120001", #average household size
+                      "H0120002", #average household size for owner-occupied
+                      "H0120003", #average household size for renters
+                      "P0050003", #population not hispanic or latino, white alone
+                      "P0120003", #male 0-5
+                      "P0120004", #male 5-9
+                      "P0120005", #male 10-14
+                      "P0120006", #male 15-17
+                      "P0120007", #male 18-19
+                      "P0120008", #male 20
+                      "P0120009", #male 21
+                      "P0120010", #male 22-24
+                      "P0120011", #male 25-29
+                      "P0120012", #male 30-34
+                      "P0120013", #male 35-39
+                      "P0120014", #male 40-44
+                      "P0120015", #male 45-49
+                      "P0120016", #male 50-54
+                      "P0120017", #male 55-59
+                      "P0120018", #male 60-61
+                      "P0120019", #male 62-64
+                      "P0120020", #male 65-66
+                      "P0120021", #male 67-69
+                      "P0120022", #male 70-74
+                      "P0120023", #male 75-79
+                      "P0120024", #male 80-84
+                      "P0120025", #male 85+
+                      "P0120027", #female 0-5
+                      "P0120028", #female 5-9
+                      "P0120029", #female 10-14
+                      "P0120030", #female 15-17
+                      "P0120031", #female 18-19
+                      "P0120032", #female 20
+                      "P0120033", #female 21
+                      "P0120034", #female 22-24
+                      "P0120035", #female 25-29
+                      "P0120036", #female 30-34
+                      "P0120037", #female 35-39
+                      "P0120038", #female 40-44
+                      "P0120039", #female 45-49
+                      "P0120040", #female 50-54
+                      "P0120041", #female 55-59
+                      "P0120042", #female 60-61
+                      "P0120043", #female 62-64
+                      "P0120044", #female 65-66
+                      "P0120045", #female 67-69
+                      "P0120046", #female 70-74
+                      "P0120047", #female 75-79
+                      "P0120048", #female 80-84
+                      "P0120049", #female 85+
+                    "P0130001", #median age both sexes
+                    "P0130002", #median age male
+                    "P0130003", #median age female
+                    "P0180001", #households
+                    "P0180002", #family households
+                    "P0290020", #male householder living alone 
+                    "P0290023", #female householder living alone 
+                    "P0420001", #pop in group quarters?
+                    
                       )
 ## Acquire and tidy 1990 block data
 blk1990data <- tibble()
