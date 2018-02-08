@@ -156,7 +156,7 @@ vars2010 <- tribble(~name,
                     "P0180002", #family households
                     "P0290020", #male householder living alone 
                     "P0290023", #female householder living alone 
-                    "P0420001", #pop in group quarters?
+                    "P0420001" #pop in group quarters?
                     
                       )
 ## Acquire and tidy 1990 block data
