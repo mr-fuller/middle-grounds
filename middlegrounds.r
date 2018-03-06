@@ -89,7 +89,7 @@ vars2000 <- as_tibble(listCensusMetadata(name = "sf1",
                                          vintage = 2000,
                                         type = "variables")
 )
-sexbyage2010 <- paste0("P012000",str_pad(3:49,2,pad = "0"))
+sexbyage2010 <- paste0("P01200",str_pad(3:49,2,pad = "0"))
 vars2010 <- tribble(~name,
                       "P0010001", #Total population
                       "P0030002", #Total Population
@@ -195,7 +195,7 @@ blk2010data <- tibble()
 for (i in unique(substr(blks_2010$fips,6,11))){
   temp <-as_tibble(getCensus(name="sf1", 
                              vintage = 2010, 
-                             vars =  vars2010$name, 
+                             vars =  sexbyage2010, #vars2010$name, 
                              region = "block:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
                              regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
                              key = api_key ))
