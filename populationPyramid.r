@@ -385,10 +385,12 @@ head(blk2010data)
 View(blk2010data[,c(1:5,25:28)])
 
 ggplot(data = blk2010data, aes(x = Age, y = pop, fill = Sex))+
-  geom_bar(stat = "identity", width = 1)+
+  geom_bar(stat = "identity")+
+  geom_text(aes(x=Age, y = pop, label = group_est,hjust="outward"))+#, position = position_dodge(width = 0.9))+
   scale_y_continuous(breaks = c(-5,0,5),labels = c("5","0","5"))+
   coord_flip()+
-  scale_fill_manual(values = c("red","navy"))+
+  #scale_fill_manual(values = c("red","navy"))+
+  annotate("text", x = 17, y = -5, label = "Total Population: 110")+
   labs(y = "Population",
-       title = "Middle Grounds District Demographics",
+       title = "Middle Grounds District 2010 Population",
        caption = "Source: US Census Bureau")
