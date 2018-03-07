@@ -88,8 +88,23 @@ vars1990 <- as_tibble(listCensusMetadata(name = "sf1",
 vars2000 <- as_tibble(listCensusMetadata(name = "sf1",
                                          vintage = 2000,
                                          type = "variables")
+                      
 )
-malebyage2010 <- paste0("P01200",str_pad(3:25,2,pad = "0"))
+getPyramidVars <- function(year){
+  #retrieve all variables
+  vars <- as_tibble(listCensusMetadata(name = "sf1",
+                                           vintage = year,
+                                           type = "variables"))
+  #filter to sex by age variables
+  vars <- filter(vars2000,str_detect(concept,"P12. Sex By Age"))
+  #remove all 'total' variables
+  arrange(vars2000,name)[-c(1:2,26),]
+                    return(vars)
+}
+vars2000 <- getPyramidVars(2000)
+
+
+smalebyage2010 <- paste0("P01200",str_pad(3:25,2,pad = "0"))
 femalebyage2010 <- paste0("P01200",str_pad(26:49,2,pad = "0"))
 vars2010 <- tribble(~name,
                     "P0010001", #Total population
@@ -175,21 +190,11 @@ for (i in unique(substr(blks_1990$fips,6,11))){
 ## filter blocks to only those in Middle Grounds District 
 filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
 
+setnames(blk2000data, old = substring(as.character(li$label),11), new = substring(as.character(li$label),12))
 
-## Acquire and tidy 2000 block data
-blk2000data <- tibble()
-for (i in unique(substr(blks_2000$fips,6,11))){
-  temp <-as_tibble(getCensus(name="sf1", 
-                             vintage = 2000, 
-                             vars =  c("P001001","P003001"), 
-                             region = "block:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
-                             regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
-                             key = api_key ))
-  blk2000data <-rbind(blk2000data,temp)
-  
-}
-## filter blocks to only those in Middle Grounds District 
-filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
+ 
+blk2000data <- filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
+
 
 ## Acquire and tidy 2010 block data
 blk2010data <- tibble()
@@ -203,6 +208,7 @@ for (i in unique(substr(blks_2010$fips,6,11))){
   blk2010data <-rbind(blk2010data,temp)
   
 }
+
 ## filter blocks to only those in Middle Grounds District 
 blk2010data <- filter(unite(blk2010data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2010$fips)
 ## tidy data for population pyramid creation
@@ -304,7 +310,7 @@ sexbyage2010vars = c(
   "Female 85+" 
 )
 
-sexbyage2010vars = c(
+sexbyageorder = c(
   "Male 0-4" ,
   "Male 5-9" ,
   "Male 10-14" ,
@@ -346,19 +352,26 @@ sexbyage2010vars = c(
   "Female 80-84",
   "Female 85+" 
 )
+#function to combine cohorts in a census dataset
+combineCohorts <- function(data){
+  data <- data %>%
+    mutate("SEX BY AGE:Male 15 to 19" = (data$'SEX BY AGE:Male: 15 to 17'+data$'SEX BY AGE:Male:18'&'19'))%>%
+    mutate("SEX BY AGE:Female 15 to 19" = (data$'SEX BY AGE:Female 15-17'+data$'SEX BY AGE:Female 18-19'))%>%
+    #combine 20,21 and 22-24 cohorts
+    mutate("SEX BY AGE:Male 20 to 24" = (data$'SEX BY AGE:Male 20'+data$'SEX BY AGE:Male 21'+data$'SEX BY AGE:Male 22-24'))%>%
+    mutate("SEX BY AGE:Female 20 to 24" = (data$'SEX BY AGE:Female 20'+data$'SEX BY AGE:Female 21'+data$'SEX BY AGE:Female 22-24'))%>%
+    #combine 60-61 and 62-64 cohorts
+    mutate("SEX BY AGE:Male 60 to 64" = (data$'SEX BY AGE:Male 60'&'61'+data$'SEX BY AGE:Male 62 to 64'))%>%
+    mutate("SEX BY AGE:Female 60 to 64" = (data$'SEX BY AGE:Female 60'&'61'+data$'SEX BY AGE:Female 62 to 64'))%>%
+    #combine 65-66 and 67-69 cohorts
+    mutate("Male 65-69" = (data$'Male 65-66'+data$'Male 67-69'))%>%
+    mutate("Female 65-69" = (data$'Female 65-66'+data$'Female 67-69'))
+    
+    
+}
+
 
 #combine 15-17 and 18-19 cohorts
-blk2010data <- mutate(blk2010data,"Male 15-19" = (blk2010$'Male 15-17'+blk2010$'Male 18-19'))
-blk2010data <- mutate(blk2010data,"Female 15-19" = (blk2010$'Female 15-17'+blk2010$'Female 18-19'))
-#combine 20,21 and 22-24 cohorts
-blk2010data <- mutate(blk2010data,"Male 20-24" = (blk2010$'Male 20'+blk2010$'Male 21'+blk2010$'Male 22-24'))
-blk2010data <- mutate(blk2010data,"Female 20-24" = (blk2010$'Female 20'+blk2010$'Female 21'+blk2010$'Female 22-24'))
-#combine 60-61 and 62-64 cohorts
-blk2010data <- mutate(blk2010data,"Male 60-64" = (blk2010$'Male 60-61'+blk2010$'Male 62-64'))
-blk2010data <- mutate(blk2010data,"Female 60-64" = (blk2010$'Female 60-61'+blk2010$'Female 62-64'))
-#combine 65-66 and 67-69 cohorts
-blk2010data <- mutate(blk2010data,"Male 65-69" = (blk2010$'Male 65-66'+blk2010$'Male 67-69'))
-blk2010data <- mutate(blk2010data,"Female 65-69" = (blk2010$'Female 65-66'+blk2010$'Female 67-69'))
 
 #drop unnecessary columns
 blkdata2010 <- select(blk2010data,-contains("15-17"),
@@ -367,7 +380,7 @@ blkdata2010 <- select(blk2010data,-contains("15-17"),
                       -contains("62-64"),-contains("65-66"),-contains("67-69"))
 
 
-blk2010data <- gather(blk2010data,sexbyage2010vars,key = "cohort", value = "pop")  
+blk2010data <- gather(blk2010data,sexbyageorder,key = "cohort", value = "pop")  
 
 
 #sum by age and sex cohort
@@ -384,12 +397,12 @@ head(blk2010data)
 
 View(blk2010data[,c(1:5,25:28)])
 
-ggplot(data = blk2010data, aes(x = Age, y = pop, fill = Sex))+
-  geom_bar(stat = "identity")+
-  geom_text(aes(x=Age, y = pop, label = group_est,hjust="outward"))+#, position = position_dodge(width = 0.9))+
+pyramid <- ggplot(data = blk2010data, aes(x = Age, y = pop, fill = Sex))+
+  geom_bar(stat = "identity")+ #note that the options for geom_bar are 'identity' or 'count'
+  #geom_text(aes(x=Age, y = pop, label = group_est,hjust="outward"))+#, position = position_dodge(width = 0.9))+
   scale_y_continuous(breaks = c(-5,0,5),labels = c("5","0","5"))+
   coord_flip()+
-  #scale_fill_manual(values = c("red","navy"))+
+  scale_fill_manual(values = c("red","navy"))+
   annotate("text", x = 17, y = -5, label = "Total Population: 110")+
   labs(y = "Population",
        title = "Middle Grounds District 2010 Population",
