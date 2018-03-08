@@ -86,7 +86,7 @@ getPyramidVars <- function(year){
 vars2000 <- getPyramidVars(2000)
 
 ## Acquire and tidy 2000 block data
-blk2000data <- tibble()
+pyramid2000data <- tibble()
 for (i in unique(substr(blks_2000$fips,6,11))){
   temp <-as_tibble(getCensus(name="sf1", 
                              vintage = 2000, 
@@ -94,12 +94,12 @@ for (i in unique(substr(blks_2000$fips,6,11))){
                              region = "block:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
                              regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
                              key = api_key ))
-  blk2000data <-rbind(blk2000data,temp)
+  pyramid2000data <-rbind(pyramid2000data,temp)
   
 }
 
 ## filter blocks to only those in Middle Grounds District
-blk2000data <- filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
+pyramid2000data <- filter(unite(pyramid2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
 #reformat names for columns
 li <- arrange(li,name)
 li$label2 <- gsub(" to ", "-",substring(as.character(li$label),12))
@@ -107,7 +107,7 @@ li$label2 <- gsub("'&'","-",li$label2)
 li$label2 <- gsub("'<'5","0-4",li$label2)
 li$label2 <- gsub(" yrs-over","+",li$label2)
 #rename columns
-setnames(blk2000data, old = as.character(li$name), new = as.character(li$label2))
+setnames(pyramid2000data, old = as.character(li$name), new = as.character(li$label2))
 
 #function to combine cohorts in a census dataset
 combineCohorts <- function(data){
@@ -127,13 +127,13 @@ combineCohorts <- function(data){
   
   
 }
-blk2000data <- combineCohorts(blk2000data)
+pyramid2000data <- combineCohorts(pyramid2000data)
 
 
 
 
 #drop unnecessary columns
-blk2000data <- select(blk2000data,-contains("15-17"),-contains("18-19"),
+pyramid2000data <- select(pyramid2000data,-contains("15-17"),-contains("18-19"),
                       -one_of(c('Male:20','Female:20')),
                       -matches("Male:21"),-matches("Female:21"),-contains("22-24"),
                       -contains("60-61"),-contains("62-64"),
@@ -141,11 +141,11 @@ blk2000data <- select(blk2000data,-contains("15-17"),-contains("18-19"),
                       -contains("Total"))
 
 
-blk2000data <- gather(blk2000data,sexbyageorder,key = "cohort", value = "pop")  
+pyramid2000data <- gather(pyramid2000data,sexbyageorder,key = "cohort", value = "pop")  
 
 
 #sum by age and sex cohort
-blk2000data <- blk2000data %>%
+pyramid2000data <- pyramid2000data %>%
   group_by(cohort) %>%
   mutate(group_est = sum(pop)) %>%
   distinct(cohort, .keep_all = TRUE) %>%
@@ -163,7 +163,7 @@ blk2000data <- blk2000data %>%
 
 #View(blk2000data[,c(1:5,25:28)])
 
-pyramid <- ggplot(data = blk2000data, aes(x = Age, y = group_est, fill = Sex))+
+pyramid <- ggplot(data = pyramid2000data, aes(x = Age, y = group_est, fill = Sex))+
   geom_bar(stat = "identity")+ #note that the options for geom_bar are 'identity' or 'count'
   #geom_text(aes(x=Age, y = pop, label = group_est,hjust="outward"))+#, position = position_dodge(width = 0.9))+
   scale_y_continuous(breaks = c(-5,0,5),labels = c("5","0","5"))+
