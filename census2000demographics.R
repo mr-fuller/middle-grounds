@@ -34,7 +34,7 @@ vars2000 <- tribble(~name,
                     "H003001", #Housing Units
                     "H003002", #occupied housing units
                     "H003003", #vacant housing units
-                    "H004004", #renter occupied units
+                    "H004003", #renter occupied units
                     "H007001", #total householders
                     "H007003", #householder not hispanic or latino who is white alone
                     "H011003", #population in renter occupied housing units
@@ -67,10 +67,10 @@ getDemoVars <- function(year){
 demoVars2000 <- getDemoVars(2000)
 
 blk2000data <- tibble()
-for (i in unique(substr(blks_2010$fips,6,11))){
+for (i in unique(substr(blks_2000$fips,6,11))){
   temp <-as_tibble(getCensus(name="sf1", 
                              vintage = 2000, 
-                             vars =  vars2000$name, 
+                             vars =  demoVars2000$name, 
                              region = "block:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
                              regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
                              key = api_key ))
@@ -79,7 +79,7 @@ for (i in unique(substr(blks_2010$fips,6,11))){
 }
 
 ## filter blocks to only those in Middle Grounds District 
-blk2000data <- filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2010$fips)
+blk2000data <- filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
 #rename
 setnames(blk2000data, old = as.character(demoVars2000$name), new = as.character(demoVars2000$label))
 
