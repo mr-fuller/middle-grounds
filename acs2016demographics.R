@@ -57,7 +57,7 @@ temp <-as_tibble(getCensus(name="acs/acs5",
   white_pct <- (blkgrp2016data$B03002_003E/blkgrp2016data$B03001_001E)*100
   poc_pct <- (blkgrp2016data$B03001_001E-blkgrp2016data$B03002_003E)/blkgrp2016data$B03001_001E*100
   
-raceplot <- plot_ly(blkgrp2016data,
-                    x = blkgrp2016data$block.group,y = ~(blkgrp2016data$B03002_003E/blkgrp2016data$B01001_001E)*100, name = "White Alone, non-Hispanic", type = "bar")%>% 
-  add_trace(y = ~(blkgrp2016data$B01001_001E-blkgrp2016data$B03002_003E)/blkgrp2016data$B01001_001E*100, name = "People of Color")%>%
+race2016 <- plot_ly(blkgrp2016data,
+                    x = "2016",y = ~(sum(blkgrp2016data$B03002_003E)/sum(blkgrp2016data$B01001_001E))*100, name = "White Alone, non-Hispanic", type = "bar")%>% 
+  add_trace(y = ~(sum(blkgrp2016data$B01001_001E)-sum(blkgrp2016data$B03002_003E))/sum(blkgrp2016data$B01001_001E)*100, name = "People of Color")%>%
   layout(yaxis = list(title = 'Percentage'),barmode = 'stack')
