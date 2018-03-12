@@ -83,6 +83,14 @@ blk2000data <- filter(unite(blk2000data, state, county, tract, block, col="GEOID
 #rename
 setnames(blk2000data, old = as.character(demoVars2000$name), new = as.character(demoVars2000$label))
 
+race2000 <- plot_ly(blk2000data,
+                    x = "2000", 
+                    y = ~(sum(blk2000data$`HISPANIC:NotHisp:White alone`)/ sum(blk2000data$`Population:Total [1` )*100),
+                    name = 'White Alone, not Hispanic', type = 'bar')%>%
+  add_trace(y = ~(sum(blk2000data$`Population:Total [1`) - sum(blk2000data$`HISPANIC:NotHisp:White alone`))/sum(blk2000data$`Population:Total [1`)*100,
+            name = "People of Color")%>%
+  layout(yaxis = list(title = "Percentage"),barmode = 'stack')
+
 #read in a spatial layer
 
 #join data to spatial layer on GEOID

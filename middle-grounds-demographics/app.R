@@ -12,10 +12,15 @@ library(leaflet)
 library(shinydashboard)
 library(rgdal)
 library(png)
+library(ggplot2)
+#load(".RData")
+source("C:/Users/fullerm/Documents/R/middle-grounds/popPyramid2000.r",echo = TRUE)
+#pyramid <- pyramid
 #pyramid2000 <- readPNG("data/pyramid2000.png")
 blk2000 <- readOGR("data/middle_grounds_blk_2000.gpkg")
 blk2000 <- spTransform(blk2000, CRS("+init=epsg:4326"))
-
+#pyramid2000data <<- pyramid2000data
+#p1=iris%>%ggplot(aes(x=Sepal.Length,y=Sepal.Width,colour=Species))+geom_point()
 # Define UI for application that draws a histogram
 ui <- #dashboardPage(
   navbarPage("Middle Grounds District",
@@ -49,8 +54,8 @@ ui <- #dashboardPage(
                                   South St. Clair Street, the point of beginning."),
                                 leafletOutput("map"))
                       ),
-             tabPanel("Population",
-                      mainPanel(imageOutput("pyramid"))),
+             tabPanel("Population",mainPanel(
+                      plotOutput("pyramid"))),
              tabPanel("Race",
                       # Sidebar with a slider input for number of bins 
                       sidebarLayout(   
@@ -83,7 +88,7 @@ ui <- #dashboardPage(
              tabPanel("Summary", h1("First level title"),
                       h2("Second level title"), h3("Third level title"), h4("Fourth level title"),  
                       h5("Fifth level title"),h6("Sixth level title")),
-             tabPanel( "Trends",plotOutput("distPlot")),
+             tabPanel( "Trends",mainPanel(plotOutput("distPlot"))),
              tabPanel("Interactive Map", leafletOutput("map",height = 800)),
              tabPanel("Education",
                       mainPanel(tableOutput("education")))
@@ -122,10 +127,22 @@ ui <- #dashboardPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-   output$pyramid <- renderImage({
+   output$pyramid <- renderPlot({
+     print(pyramid2000)
+     #print(ggplot(data = pyramid2000data, aes(x = Age, y = group_est, fill = Sex))+
+     #geom_bar(stat = "identity")+ #note that the options for geom_bar are 'identity' or 'count'
+     #geom_text(aes(x=Age, y = pop, label = group_est,hjust="outward"))+#, position = position_dodge(width = 0.9))+
+     #scale_y_continuous(breaks = c(-5,0,5),labels = c("5","0","5"))+
+     #coord_flip()+
      
-     list(src = "images/pyramid2000.png")
-   },deleteFile = FALSE)
+     #scale_fill_manual(values = c("red","navy"))+
+     #annotate("text", x = 17, y = -5, label = "Total Population: 107")+
+     #labs(y = "Population",
+      #    title = "Middle Grounds District 2000 Population",
+       #   caption = "Source: US Census Bureau"))
+     #print(p)
+     })
+     
    output$distPlot <- renderPlot({
       # generate bins based on input$bins from ui.R
       x    <- faithful[, 2] 
