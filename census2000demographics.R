@@ -26,7 +26,8 @@ blks_2000 <- tribble(~fips,
                      390950041001001,
                      390950041001002)
 
-blk_grps_2000 <- c(390950041001,390950038001)
+blk_grps_2000 <- tribble(~fips,
+                         390950041001,390950038001)
 
 vars2000 <- tribble(~name,
                     "P001001", #Total population
@@ -53,43 +54,99 @@ vars2000 <- tribble(~name,
                     "P027024" #pop in group quarters? institutionalized 
                     
 )
-getDemoVars <- function(year){
+vars2000sf3 <- tribble(~name,
+                       "P001001", #Total population
+                       "P007003", #population not hispanic or latino, white alone
+                       "P037001", #Population over 25
+                       "P037011", #male completed high school or equivalent
+                       "P037015", #male completed bachelor's degree
+                       "P037028", #female completed high school or equivalent
+                       "P037032", #female completed bachelor's degree
+                       "P043001", #population 16 and over
+                       "P043007", #civilian men unemployed
+                       "P043008", #men not in labor force
+                       "P043014", #civilian women unemployed
+                       "P043015", #women not in labor force
+                       "P092001", #total households
+                       "P092002" #household income in 1999 below poverty level
+                       )
+getDemoVars <- function(name,year){
   #retrieve all variables
-  vars <- as_tibble(listCensusMetadata(name = "sf1",
+  vars <- as_tibble(listCensusMetadata(name = name,
                                        vintage = year,
                                        type = "variables"))
   #filter to sex by age variables
-  vars <- filter(vars,vars$name %in% vars2000$name)
+  vars <- filter(vars,vars$name %in% vars2000sf3$name)
   #remove all 'total' variables
   vars <- arrange(vars,name)#[-c(1:2,26),]
   return(vars)
 }
-demoVars2000 <- getDemoVars(2000)
+demoVars2000 <- getDemoVars("sf1",2000)
+demoVars2000sf3 <- getDemoVars("sf3",2000)
 
 blk2000data <- tibble()
 for (i in unique(substr(blks_2000$fips,6,11))){
-  temp <-as_tibble(getCensus(name="sf1", 
+  temp <-as_tibble(getCensus(name="sf3", 
                              vintage = 2000, 
-                             vars =  demoVars2000$name, 
+                             vars =  demoVars2000sf3$name, 
                              region = "block:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
                              regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
                              key = api_key ))
   blk2000data <-rbind(blk2000data,temp)
   
 }
+blkgrp2000data <- tibble()
+for (i in unique(substr(blks_2000$fips,6,11))){
+  temp <-as_tibble(getCensus(name="sf3", 
+                             vintage = 2000, 
+                             vars =  demoVars2000sf3$name, 
+                             region = "block group:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
+                             regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
+                             key = api_key ))
+  blkgrp2000data <-rbind(blkgrp2000data,temp)
+  
+}
 
 ## filter blocks to only those in Middle Grounds District 
 blk2000data <- filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
 #rename
-setnames(blk2000data, old = as.character(demoVars2000$name), new = as.character(demoVars2000$label))
+setnames(blk2000data, old = as.character(demoVars2000sf3$name), new = as.character(demoVars2000sf3$label))
 
-race2000 <- plot_ly(blk2000data,
+## filter block groups to only those in Middle Grounds District 
+blkgrp2000data <- filter(unite(blkgrp2000data, state, county, tract, block.group, col="GEOID",sep = "",remove = FALSE), GEOID %in% blk_grps_2000$fips)
+#rename
+#setnames(blkgrp2000data, old = as.character(demoVars2000sf3$name), new = as.character(demoVars2000sf3$label))
+
+
+race2000 <- plot_ly(blkgrp2000data,
                     x = "2000", 
-                    y = ~(sum(blk2000data$`HISPANIC:NotHisp:White alone`)/ sum(blk2000data$`Population:Total [1` )*100),
+                    y = ~(sum(blkgrp2000data$P007003)/ sum(blkgrp2000data$P001001 )*100),
                     name = 'White Alone, not Hispanic', type = 'bar')%>%
-  add_trace(y = ~(sum(blk2000data$`Population:Total [1`) - sum(blk2000data$`HISPANIC:NotHisp:White alone`))/sum(blk2000data$`Population:Total [1`)*100,
+  add_trace(y = ~(sum(blkgrp2000data$P001001) - sum(blkgrp2000data$P007003))/sum(blkgrp2000data$P001001)*100,
             name = "People of Color")%>%
   layout(yaxis = list(title = "Percentage"),barmode = 'stack')
+
+unemployment2000 <- plot_ly(blkgrp2000data,
+                    x = "2000", 
+                    y = ~((sum(blkgrp2000data$P043007)+sum(blkgrp2000data$P043014))/ sum(blkgrp2000data$P043001 )*100),
+                    name = 'Unemployed', type = 'bar')%>%
+  add_trace(y = ~(sum(blkgrp2000data$P043008) + sum(blkgrp2000data$P043015))/sum(blkgrp2000data$P043001)*100,
+            name = "Not in Labor Force")%>%
+  layout(yaxis = list(title = "Percentage",range = c(0,60)),barmode = 'group')
+
+poverty2000 <- plot_ly(blkgrp2000data,
+                       x = "2000",
+                       y = ~((sum(blkgrp2000data$P092002)/sum(blkgrp2000data$P092001)*100)),
+                       name = "Poverty Rate", type = 'bar')%>%
+  layout(yaxis = list(title = "Percentage",range = c(0,100)))
+
+education2000 <- plot_ly(blkgrp2000data,
+                       x = "2000",
+                       y = ~((sum(blkgrp2000data$P037011)+sum(blkgrp2000data$P037028))/sum(blkgrp2000data$P037001)*100),
+                       name = "High School or Equivalent", type = 'bar')%>%
+  add_trace(y= ~((sum(blkgrp2000data$P037015)+sum(blkgrp2000data$P037032))/sum(blkgrp2000data$P037001)*100),
+            name= "Bachelor's Degree")%>%
+  layout(yaxis = list(title = "Percentage",range = c(0,50)), barmode = 'group')
 
 #read in a spatial layer
 
