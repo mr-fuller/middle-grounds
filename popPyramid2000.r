@@ -171,9 +171,10 @@ pyramid2000 <- ggplot(data = pyramid2000data, aes(x = Age, y = group_est, fill =
   scale_y_continuous(breaks = c(-5,0,5),labels = c("5","0","5"))+
   coord_flip()+
   
-  scale_fill_manual(values = c("red","navy"))+
-  annotate("text", x = 17, y = -5, label = "Total Population: 107")+
+  scale_fill_manual(values = c("red","navy"),guide = FALSE)+
+  annotate("text", x = 17, y = -5, label = "Total Population: 107",size = 5)+
   labs(y = "Population",
        title = "2000",
-       caption = "Source: US Census Bureau")
+       caption = "Source: US Census Bureau")+
+  theme(plot.title = element_text(size = 22))
 print(pyramid2000)
