@@ -175,8 +175,10 @@ pyramid2010 <- ggplot(data = pyramid2010data, aes(x = Age, y = group_est, fill =
   coord_flip()+
   
   scale_fill_manual(values = c("red","navy"))+
-  annotate("text", x = 17, y = -5, label = "Total Population: 110")+
-  labs(y = "Population",
+  annotate("text", x = 17, y = -5, label = "Total Population: 110",size = 5)+
+  labs(x = "",
+       y = "Population",
        title = "2010",
-       caption = "Source: US Census Bureau")
+       caption = "Source: US Census Bureau")+
+  theme(plot.title = element_text(size = 22))
 print(pyramid2010)
