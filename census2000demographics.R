@@ -81,20 +81,20 @@ getDemoVars <- function(name,year){
   vars <- arrange(vars,name)#[-c(1:2,26),]
   return(vars)
 }
-demoVars2000 <- getDemoVars("sf1",2000)
+#demoVars2000 <- getDemoVars("sf1",2000)
 demoVars2000sf3 <- getDemoVars("sf3",2000)
 
-blk2000data <- tibble()
-for (i in unique(substr(blks_2000$fips,6,11))){
-  temp <-as_tibble(getCensus(name="sf3", 
-                             vintage = 2000, 
-                             vars =  demoVars2000sf3$name, 
-                             region = "block:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
-                             regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
-                             key = api_key ))
-  blk2000data <-rbind(blk2000data,temp)
+#blk2000data <- tibble()
+#for (i in unique(substr(blks_2000$fips,6,11))){
+  #temp <-as_tibble(getCensus(name="sf3", 
+                             #vintage = 2000, 
+                             #vars =  demoVars2000$name, 
+                             #region = "block:*",##,paste(substr(blks_2000$fips,12,15),collapse = ','),sep = ""), 
+                             #regionin = paste("state:39+county:095+tract:",i,sep = ""),                        
+                             #key = api_key ))
+  #blk2000data <-rbind(blk2000data,temp)
   
-}
+#}
 blkgrp2000data <- tibble()
 for (i in unique(substr(blks_2000$fips,6,11))){
   temp <-as_tibble(getCensus(name="sf3", 
@@ -108,9 +108,9 @@ for (i in unique(substr(blks_2000$fips,6,11))){
 }
 
 ## filter blocks to only those in Middle Grounds District 
-blk2000data <- filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
+#blk2000data <- filter(unite(blk2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
 #rename
-setnames(blk2000data, old = as.character(demoVars2000sf3$name), new = as.character(demoVars2000sf3$label))
+#setnames(blk2000data, old = as.character(demoVars2000sf3$name), new = as.character(demoVars2000sf3$label))
 
 ## filter block groups to only those in Middle Grounds District 
 blkgrp2000data <- filter(unite(blkgrp2000data, state, county, tract, block.group, col="GEOID",sep = "",remove = FALSE), GEOID %in% blk_grps_2000$fips)
@@ -121,32 +121,39 @@ blkgrp2000data <- filter(unite(blkgrp2000data, state, county, tract, block.group
 race2000 <- plot_ly(blkgrp2000data,
                     x = "2000", 
                     y = ~(sum(blkgrp2000data$P007003)/ sum(blkgrp2000data$P001001 )*100),
-                    name = 'White Alone, not Hispanic', type = 'bar')%>%
+                    name = 'White Alone, not Hispanic', type = 'bar',
+                    hoverinfo = 'y')%>%
   add_trace(y = ~(sum(blkgrp2000data$P001001) - sum(blkgrp2000data$P007003))/sum(blkgrp2000data$P001001)*100,
-            name = "People of Color")%>%
-  layout(yaxis = list(title = "Percentage"),barmode = 'stack')
+            name = "People of Color",
+            hoverinfo = 'y')%>%
+  layout(yaxis = list(title = "Percentage"),barmode = 'stack',showlegend = FALSE)
 
 unemployment2000 <- plot_ly(blkgrp2000data,
                     x = "2000", 
                     y = ~((sum(blkgrp2000data$P043007)+sum(blkgrp2000data$P043014))/ sum(blkgrp2000data$P043001 )*100),
-                    name = 'Unemployed', type = 'bar')%>%
+                    name = 'Unemployed', type = 'bar',
+                    hoverinfo = 'y')%>%
   add_trace(y = ~(sum(blkgrp2000data$P043008) + sum(blkgrp2000data$P043015))/sum(blkgrp2000data$P043001)*100,
-            name = "Not in Labor Force")%>%
-  layout(yaxis = list(title = "Percentage",range = c(0,60)),barmode = 'group')
+            name = "Not in Labor Force",
+            hoverinfo = 'y')%>%
+  layout(yaxis = list(title = "Percentage",range = c(0,60)),barmode = 'group',showlegend = FALSE)
 
 poverty2000 <- plot_ly(blkgrp2000data,
                        x = "2000",
                        y = ~((sum(blkgrp2000data$P092002)/sum(blkgrp2000data$P092001)*100)),
-                       name = "Poverty Rate", type = 'bar')%>%
+                       name = "Poverty Rate", type = 'bar',
+                       hoverinfo = 'y')%>%
   layout(yaxis = list(title = "Percentage",range = c(0,100)))
 
 education2000 <- plot_ly(blkgrp2000data,
                        x = "2000",
                        y = ~((sum(blkgrp2000data$P037011)+sum(blkgrp2000data$P037028))/sum(blkgrp2000data$P037001)*100),
-                       name = "High School or Equivalent", type = 'bar')%>%
+                       name = "High School or Equivalent", type = 'bar',
+                       hoverinfo = 'y')%>%
   add_trace(y= ~((sum(blkgrp2000data$P037015)+sum(blkgrp2000data$P037032))/sum(blkgrp2000data$P037001)*100),
-            name= "Bachelor's Degree")%>%
-  layout(yaxis = list(title = "Percentage",range = c(0,50)), barmode = 'group')
+            name= "Bachelor's Degree",
+            hoverinfo = 'y')%>%
+  layout(yaxis = list(title = "Percentage",range = c(0,50)), barmode = 'group',showlegend = FALSE)
 
 #read in a spatial layer
 
