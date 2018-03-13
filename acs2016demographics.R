@@ -13,9 +13,10 @@ listCensusMetadata(name = "acs/acs5",vintage = 2016, type = "variables")
 vars <- c("B01001_001E","B01001_001M", #total pop
           "B03002_003E","B03002_003M", #white alone, non-hispanic
           "B06011_001E","B06011_001M", #median income
-          "B15003_017E","B15003_017M", #high school diploma
-          "B15003_018E","B15003_018M", #GED
-          "B15003_022E","B15003_022M", #bachelor's degree
+          "B15003_001E","B15003_001M", #population 25+
+          "B15003_017E","B15003_017M", #high school diploma 25+
+          "B15003_018E","B15003_018M", #GED 25+
+          "B15003_022E","B15003_022M", #bachelor's degree 25+
           "B17017_001E","B17017_001M", #households
           "B17017_002E","B17017_002M", #households below poverty level
           "B25001_001E","B25001_001M", #housing units
@@ -54,10 +55,30 @@ temp <-as_tibble(getCensus(name="acs/acs5",
   
 #}
   blkgrp2016data <- blkgrp2016data %>% filter(block.group>1)
-  white_pct <- (blkgrp2016data$B03002_003E/blkgrp2016data$B03001_001E)*100
-  poc_pct <- (blkgrp2016data$B03001_001E-blkgrp2016data$B03002_003E)/blkgrp2016data$B03001_001E*100
+  #white_pct <- (blkgrp2016data$B03002_003E/blkgrp2016data$B03001_001E)*100
+  #poc_pct <- (blkgrp2016data$B03001_001E-blkgrp2016data$B03002_003E)/blkgrp2016data$B03001_001E*100
   
 race2016 <- plot_ly(blkgrp2016data,
                     x = "2016",y = ~(sum(blkgrp2016data$B03002_003E)/sum(blkgrp2016data$B01001_001E))*100, name = "White Alone, non-Hispanic", type = "bar")%>% 
   add_trace(y = ~(sum(blkgrp2016data$B01001_001E)-sum(blkgrp2016data$B03002_003E))/sum(blkgrp2016data$B01001_001E)*100, name = "People of Color")%>%
   layout(yaxis = list(title = 'Percentage'),barmode = 'stack')
+
+unemployment2016 <- plot_ly(blkgrp2016data,x = "2016",
+                            y= ~(sum(blkgrp2016data$B23025_005E)/sum(blkgrp2016data$B23025_001E)*100),
+                                name = "Unemployed", type = "bar")%>%
+  add_trace(y = ~(sum(blkgrp2016data$B23025_007E)/sum(blkgrp2016data$B23025_001E)*100),name = "Not in Labor Force")%>%
+    layout(yaxis = list(title = 'Percentage',range = c(0,60)), barmode = 'group')
+
+poverty2016 <- plot_ly(blkgrp2016data,x = "2016",
+                            y= ~(sum(blkgrp2016data$B17017_002E)/sum(blkgrp2016data$B17017_001E)*100),
+                            name = "Poverty Rate", type = "bar")%>%
+  #add_trace(y = ~(sum(blkgrp2016data$B23025_007E)/sum(blkgrp2016data$B23025_001E)*100),name = "Not in Labor Force")%>%
+  layout(yaxis = list(title = 'Percentage', range = c(0,100)))
+
+education2016 <- plot_ly(blkgrp2016data,x = "2016",
+                            y= ~((sum(blkgrp2016data$B15003_017E)+sum(blkgrp2016data$B15003_018E))/sum(blkgrp2016data$B15003_001E)*100),
+                            name = "High School or Equivalent", type = "bar")%>%
+  add_trace(y = ~(sum(blkgrp2016data$B15003_022E)/sum(blkgrp2016data$B15003_001E)*100),
+            name = "Bachelor's Degree")%>%
+  layout(yaxis = list(title = 'Percentage',range = c(0,50)), barmode = 'group')
+
