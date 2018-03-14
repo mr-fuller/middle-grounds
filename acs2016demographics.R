@@ -67,7 +67,7 @@ race2016 <- plot_ly(blkgrp2016data,
   add_trace(y = ~(sum(blkgrp2016data$B01001_001E)-sum(blkgrp2016data$B03002_003E))/sum(blkgrp2016data$B01001_001E)*100, 
             name = "People of Color",
             hoverinfo = 'y')%>%
-  layout(yaxis = list(title = 'Percentage'),barmode = 'stack',legend = list(x=100,y = 0.5))
+  layout(yaxis = list(title = 'Percentage'),barmode = 'stack')
 
 unemployment2016 <- plot_ly(blkgrp2016data,x = "2016",
                             y= ~(sum(blkgrp2016data$B23025_005E)/sum(blkgrp2016data$B23025_001E)*100),
