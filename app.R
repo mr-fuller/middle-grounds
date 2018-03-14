@@ -76,19 +76,20 @@ ui <- navbarPage("Middle Grounds District Demographics",
   tabPanel("Unemployment",fluidRow(
     column(6,plotlyOutput("unemployment2000")),
     column(6,plotlyOutput("unemployment2016")),
-    br()
+    br(),
+    p("Percentages reflect those for the population age 16 and over.")
     )),
   tabPanel("Poverty", fluidRow(
     column(6,plotlyOutput("poverty2000")),
     column(6,plotlyOutput("poverty2016")),
     br(),
-    p("The district is made up of areas with low-moderate income percentages 
+    p("Poverty rates reflect those of households. The district is made up of areas with low-moderate income percentages 
         of over 51 percent, making it eligible for the City of Toledo's CDBG entitlement from HUD.")
     )),
   tabPanel("Education", fluidRow(
     column(6,plotlyOutput("education2000")),
-    column(6,plotlyOutput("education2016"))
-    ))
+    column(6,plotlyOutput("education2016")),
+    p("Percentages reflect those for the population age 25 and over.")))
     
 
 )
