@@ -2,6 +2,7 @@ library(censusapi)
 library(tidyverse)
 library(stringr)
 library(data.table)
+library(gtools)
 #api key
 api_key = "b7da053b9e664586b9e559dba9e73780602f0aab"
 
@@ -146,8 +147,10 @@ pyramid2010data <- select(pyramid2010data,-contains("15-17"),-contains("18-19"),
                           -contains("Total"))
 
 
-pyramid2010data <- gather(pyramid2010data,sexbyageorder,key = "cohort", value = "pop")  
-
+#pyramid2010data <- gather(pyramid2010data,sexbyageorder,key = "cohort", value = "pop")  
+pyramid2010data <- gather(pyramid2010data,
+                          mixedsort(colnames(pyramid2010data)[6:41]),
+                          key = "cohort", value = "pop")
 
 #sum by age and sex cohort
 pyramid2010data <- pyramid2010data %>%

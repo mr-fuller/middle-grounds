@@ -2,6 +2,7 @@ library(censusapi)
 library(tidyverse)
 library(stringr)
 library(data.table)
+library(gtools)
 #api key
 api_key = "b7da053b9e664586b9e559dba9e73780602f0aab"
 
@@ -103,7 +104,7 @@ for (i in unique(substr(blks_2000$fips,6,11))){
 pyramid2000data <- filter(unite(pyramid2000data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2000$fips)
 #reformat names for columns
 li <- select(vars2000,name,label)
-li <- arrange(li,name)
+#li <- arrange(li,name)
 li$label2 <- gsub(" to ", "-",substring(as.character(li$label),12))
 li$label2 <- gsub("'&'","-",li$label2)
 li$label2 <- gsub("'<'5","0-4",li$label2)
@@ -143,8 +144,10 @@ pyramid2000data <- select(pyramid2000data,-contains("15-17"),-contains("18-19"),
                       -contains("Total"))
 
 
-pyramid2000data <- gather(pyramid2000data,sexbyageorder,key = "cohort", value = "pop")  
-
+#pyramid2000data <- gather(pyramid2000data,colnames(pyramid2000data)[6:41],key = "cohort", value = "pop")  
+pyramid2000data <- gather(pyramid2000data,
+                          mixedsort(colnames(pyramid2000data)[6:41]),
+                          key = "cohort", value = "pop")
 
 #sum by age and sex cohort
 pyramid2000data <- pyramid2000data %>%
