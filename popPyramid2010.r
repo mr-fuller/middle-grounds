@@ -105,7 +105,7 @@ for (i in unique(substr(blks_2010$fips,6,11))){
 pyramid2010data <- filter(unite(pyramid2010data, state, county, tract, block, col="GEOID",sep = "",remove = FALSE), GEOID %in% blks_2010$fips)
 #reformat names for columns
 li <- select(vars2010,name,label)
-li <- arrange(li,name)
+#li <- arrange(li,name)
 li$label2 <- gsub(" to ", "-",as.character(li$label))
 li$label2 <- gsub(" !! ", "",li$label2)
 li$label2 <- gsub(" and ","-",li$label2)
