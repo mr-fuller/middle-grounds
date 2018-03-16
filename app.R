@@ -28,12 +28,15 @@ ui <- navbarPage("Middle Grounds District Demographics",
       p(" This website provides demographic data in support of development efforts outlined in the ", 
                a(href="http://toledo.oh.gov/media/4015/middle-grounds-district-plan-2015-reduced.pdf", 
                  "Middle Grounds District Plan")),
-                 img(src = "TMACOGlogo.jpg"),
-                 p("Data prepared by ",a(href = "http://www.tmacog.org","TMACOG")),
-                 p("Built with R, Shiny, Plotly, ggmap, leaflet, and ggplot"),
+                 
                  p("All data from the Census Bureau"),
                  p("Most data aggregated at the block group level, in which case the study area includes more than
-                  just the Middle Grounds District")),
+                  just the Middle Grounds District"),
+                 img(src = "TMACOGlogo.jpg"),
+                 p("Built with R, Shiny, Plotly, ggmap, leaflet, and ggplot"),
+                 p("Data prepared by ",a(href = "http://www.tmacog.org","TMACOG")),
+                 p("Source code at ",a(href = "https://github.com/mr-fuller/middle-grounds","GitHub"))
+                ),
     mainPanel(
       leafletOutput("map"),
       h2("Middle Grounds District Legal Description"),
