@@ -10,7 +10,7 @@
 library(shiny)
 library(ggplot2)
 library(leaflet)
-library(ggthemes)
+#library(ggthemes)
 library(rgdal)
 library(plotly)
 source("popPyramid2000.r")
