@@ -5,9 +5,9 @@ account: tmacog
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 298944
-bundleId: 1267359
+bundleId: 1271105
 url: https://tmacog.shinyapps.io/middle-grounds/
-when: 1520987781.53971
+when: 1521164432.64364
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: middlegrounds.r|populationPyramid.r|README.md|testapp.R/app.R
+ignoredFiles: testapp.R/app.R
