@@ -118,43 +118,6 @@ blkgrp2000data <- filter(unite(blkgrp2000data, state, county, tract, block.group
 #setnames(blkgrp2000data, old = as.character(demoVars2000sf3$name), new = as.character(demoVars2000sf3$label))
 
 
-race2000 <- plot_ly(blkgrp2000data,
-                    x = "2000", 
-                    y = ~(sum(blkgrp2000data$P007003)/ sum(blkgrp2000data$P001001 )*100),
-                    name = 'White Alone, not Hispanic', type = 'bar',
-                    hoverinfo = 'y')%>%
-  add_trace(y = ~(sum(blkgrp2000data$P001001) - sum(blkgrp2000data$P007003))/sum(blkgrp2000data$P001001)*100,
-            name = "People of Color",
-            hoverinfo = 'y')%>%
-  layout(yaxis = list(title = "Percentage"),barmode = 'stack',showlegend = FALSE)
-
-unemployment2000 <- plot_ly(blkgrp2000data,
-                    x = "2000", 
-                    y = ~((sum(blkgrp2000data$P043007)+sum(blkgrp2000data$P043014))/ sum(blkgrp2000data$P043001 )*100),
-                    name = 'Unemployed', type = 'bar',
-                    hoverinfo = 'y')%>%
-  add_trace(y = ~(sum(blkgrp2000data$P043008) + sum(blkgrp2000data$P043015))/sum(blkgrp2000data$P043001)*100,
-            name = "Not in Labor Force",
-            hoverinfo = 'y')%>%
-  layout(yaxis = list(title = "Percentage",range = c(0,60)),barmode = 'group',showlegend = FALSE)
-
-poverty2000 <- plot_ly(blkgrp2000data,
-                       x = "2000",
-                       y = ~((sum(blkgrp2000data$P092002)/sum(blkgrp2000data$P092001)*100)),
-                       name = "Poverty Rate", type = 'bar',
-                       hoverinfo = 'y')%>%
-  layout(yaxis = list(title = "Percentage",range = c(0,100)))
-
-education2000 <- plot_ly(blkgrp2000data,
-                       x = "2000",
-                       y = ~((sum(blkgrp2000data$P037011)+sum(blkgrp2000data$P037028))/sum(blkgrp2000data$P037001)*100),
-                       name = "High School or Equivalent", type = 'bar',
-                       hoverinfo = 'y')%>%
-  add_trace(y= ~((sum(blkgrp2000data$P037015)+sum(blkgrp2000data$P037032))/sum(blkgrp2000data$P037001)*100),
-            name= "Bachelor's Degree",
-            hoverinfo = 'y')%>%
-  layout(yaxis = list(title = "Percentage",range = c(0,50)), barmode = 'group',showlegend = FALSE)
-
 #read in a spatial layer
 
 #join data to spatial layer on GEOID
