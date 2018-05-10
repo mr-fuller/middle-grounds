@@ -4,8 +4,8 @@ library(ggplot2)
 source("acs2016demographics.R")
 #source("census2010demographics.R")
 source("census2000demographics.R")
-source(years2)
-
+#source(years2)
+years2 <- c("2016","2000")
 hsoe <- c(round(((sum(blkgrp2016data$B15003_017E)+sum(blkgrp2016data$B15003_018E))/sum(blkgrp2016data$B15003_001E)*100)),
   round(((sum(blkgrp2000data$P037011)+sum(blkgrp2000data$P037028))/sum(blkgrp2000data$P037001)*100))
 )
