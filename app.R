@@ -15,10 +15,13 @@ library(rgdal)
 library(plotly)
 source("popPyramid2000.r")
 source("popPyramid2010.r")
-source("acs2016demographics.R")
-source("census2010demographics.R")
-source("census2000demographics.R")
+#source("acs2016demographics.R")
+#source("census2010demographics.R")
+#source("census2000demographics.R")
 source("racechart.R")
+source("unemploymentchart.R")
+source("povertychart.R")
+source("edchart.R")
 blk2000 <- readOGR("data/middle_grounds_blk_2000.gpkg")
 blk2000 <- spTransform(blk2000, CRS("+init=epsg:4326"))
 #pyramid <- pyramid
@@ -73,10 +76,10 @@ ui <- navbarPage("Middle Grounds District Demographics",
     plotlyOutput("racechart")),
     #column(4,plotlyOutput("race2010")),
     #column(4,plotlyOutput("race2016"))),
-    fluidRow(br(),
+    br(),
     
-    p(" Note that the term 'People of Color' is used to include any person not identified as 'White Alone, not Hispanic'.")
-    )),
+    p("Note that the term 'People of Color' is used to include any person not identified as 'White Alone, not Hispanic'.")
+    ),
   tabPanel("Unemployment",fluidRow(
     plotlyOutput("unemploymentchart")),
     #column(6,plotlyOutput("unemployment2016")),
