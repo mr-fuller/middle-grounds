@@ -28,22 +28,3 @@ racechart <- plot_ly(racechartdata,
   layout(xaxis = list(title = 'Year'),
     yaxis = list(title = 'Percentage'),barmode = 'stack')
 
-"
-add_trace(blk2010data,x = '2010', 
-                    y = ~,
-                    name = 'White Alone, not Hispanic', type = 'bar',
-                    hoverinfo = 'y')%>%
-  add_trace(x = '2010',y = ~
-            name = 'People of Color',
-            hoverinfo = 'y')%>%
-  #layout(yaxis = list(title = 'Percentage'),barmode = 'stack', showlegend = FALSE)%>%
-
-  add_trace(blkgrp2000data,
-                    x = '2000', 
-                    y = ~,
-                    name = 'White Alone, not Hispanic', type = 'bar',
-                    hoverinfo = 'y')%>%
-  add_trace(x = '2000', y = ~,
-            name = 'People of Color',
-            hoverinfo = 'y')%>%
-  layout(yaxis = list(title = 'Percentage'),barmode = 'stack',showlegend = FALSE)"
