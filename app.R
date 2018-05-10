@@ -18,6 +18,7 @@ source("popPyramid2010.r")
 source("acs2016demographics.R")
 source("census2010demographics.R")
 source("census2000demographics.R")
+source("racechart.R")
 blk2000 <- readOGR("data/middle_grounds_blk_2000.gpkg")
 blk2000 <- spTransform(blk2000, CRS("+init=epsg:4326"))
 #pyramid <- pyramid
@@ -69,30 +70,30 @@ ui <- navbarPage("Middle Grounds District Demographics",
         )
       ),
   tabPanel("Race",fluidRow(
-    column(4,plotlyOutput("race2000")),
-    column(4,plotlyOutput("race2010")),
-    column(4,plotlyOutput("race2016"))),
+    plotlyOutput("racechart")),
+    #column(4,plotlyOutput("race2010")),
+    #column(4,plotlyOutput("race2016"))),
     fluidRow(br(),
     
     p(" Note that the term 'People of Color' is used to include any person not identified as 'White Alone, not Hispanic'.")
     )),
   tabPanel("Unemployment",fluidRow(
-    column(6,plotlyOutput("unemployment2000")),
-    column(6,plotlyOutput("unemployment2016")),
+    plotlyOutput("unemploymentchart")),
+    #column(6,plotlyOutput("unemployment2016")),
     br(),
     p("Percentages reflect those for the population age 16 and over.")
-    )),
+    ),
   tabPanel("Poverty", fluidRow(
-    column(6,plotlyOutput("poverty2000")),
-    column(6,plotlyOutput("poverty2016")),
+    plotlyOutput("povertychart")),
+    #column(6,plotlyOutput("poverty2016")),
     br(),
     p("Poverty rates reflect those of households. The district is made up of areas with low-moderate income percentages 
         of over 51 percent, making it eligible for the City of Toledo's CDBG entitlement from HUD.")
-    )),
+    ),
   tabPanel("Education", fluidRow(
-    column(6,plotlyOutput("education2000")),
-    column(6,plotlyOutput("education2016")),
-    p("Percentages reflect those for the population age 25 and over.")))
+    plotlyOutput("edchart")),
+    #column(6,plotlyOutput("education2016")),
+    p("Percentages reflect those for the population age 25 and over."))
     
 
 )
@@ -112,33 +113,22 @@ server <- function(input, output) {
     print(
       pyramid2010)
   })
-  output$race2016 <- renderPlotly({
-    print(race2016)
+  output$racechart <- renderPlotly({
+    print(racechart)
   })
-  output$race2010 <- renderPlotly({
-    print(race2010)
+  
+  output$unemploymentchart <- renderPlotly({
+    print(unemploymentchart)
   })
-  output$race2000 <- renderPlotly({
-    print(race2000)
+  
+  output$povertychart <- renderPlotly({
+    print(povertychart)
   })
-  output$unemployment2016 <- renderPlotly({
-    print(unemployment2016)
+  
+  output$edchart <- renderPlotly({
+    print(edchart)
   })
-  output$unemployment2000 <- renderPlotly({
-    print(unemployment2000)
-  })
-  output$poverty2016 <- renderPlotly({
-    print(poverty2016)
-  })
-  output$poverty2000 <- renderPlotly({
-    print(poverty2000)
-  })
-  output$education2016 <- renderPlotly({
-    print(education2016)
-  })
-  output$education2000 <- renderPlotly({
-    print(education2000)
-  })
+  
 }
 
 
