@@ -6,15 +6,17 @@ source("census2010demographics.R")
 source("census2000demographics.R")
 
 # race plot
-years = c("2016","2010","2000")
-wanh <- c(round((sum(blkgrp2016data$B03002_003E)/sum(blkgrp2016data$B01001_001E))*100),
+years = c("2000","2010","2016")
+wanh <- c(round(sum(blkgrp2000data$P007003)/ sum(blkgrp2000data$P001001 )*100),
           round((sum(blk2010data$`White alone`)/ sum(blk2010data$`Total Population`)*100)),
-          round(sum(blkgrp2000data$P007003)/ sum(blkgrp2000data$P001001 )*100)
+          round((sum(blkgrp2016data$B03002_003E)/sum(blkgrp2016data$B01001_001E))*100)
+          
           )
 
-poc <- c(round((sum(blkgrp2016data$B01001_001E)-sum(blkgrp2016data$B03002_003E))/sum(blkgrp2016data$B01001_001E)*100),
+poc <- c(round((sum(blkgrp2000data$P001001) - sum(blkgrp2000data$P007003))/sum(blkgrp2000data$P001001)*100),
          round((sum(blk2010data$`Total Population`) - sum(blk2010data$`White alone`))/sum(blk2010data$`Total Population`)*100),
-         round((sum(blkgrp2000data$P001001) - sum(blkgrp2000data$P007003))/sum(blkgrp2000data$P001001)*100))
+         round((sum(blkgrp2016data$B01001_001E)-sum(blkgrp2016data$B03002_003E))/sum(blkgrp2016data$B01001_001E)*100)
+         )
 racechartdata <- data.frame(years,wanh,poc)
 racechart <- plot_ly(racechartdata,
                     x = ~years,

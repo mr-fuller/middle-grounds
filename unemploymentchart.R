@@ -5,12 +5,14 @@ source("acs2016demographics.R")
 #source("census2010demographics.R")
 source("census2000demographics.R")
 
-years2 <- c("2016","2000")
-nilf <- c(round((sum(blkgrp2016data$B23025_007E)/sum(blkgrp2016data$B23025_001E)*100)),
-          round((sum(blkgrp2000data$P043008) + sum(blkgrp2000data$P043015))/sum(blkgrp2000data$P043001)*100)
+years2 <- c("2000","2016")
+nilf <- c(
+          round((sum(blkgrp2000data$P043008) + sum(blkgrp2000data$P043015))/sum(blkgrp2000data$P043001)*100),
+          round((sum(blkgrp2016data$B23025_007E)/sum(blkgrp2016data$B23025_001E)*100))
           )
-unemployed <- c(round((sum(blkgrp2016data$B23025_005E)/sum(blkgrp2016data$B23025_001E)*100)),
-                round(((sum(blkgrp2000data$P043007)+sum(blkgrp2000data$P043014))/ sum(blkgrp2000data$P043001 )*100))
+unemployed <- c(
+                round(((sum(blkgrp2000data$P043007)+sum(blkgrp2000data$P043014))/ sum(blkgrp2000data$P043001 )*100)),
+                round((sum(blkgrp2016data$B23025_005E)/sum(blkgrp2016data$B23025_001E)*100))
                 )
 unemploymentchartdata <- data.frame(years2,unemployed,nilf)
 unemploymentchart <- plot_ly(unemploymentchartdata,

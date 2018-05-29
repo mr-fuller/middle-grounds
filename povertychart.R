@@ -5,9 +5,10 @@ source("acs2016demographics.R")
 #source("census2010demographics.R")
 source("census2000demographics.R")
 #source(years2)
-years2 <- c("2016","2000")
-poverty <- c(round((sum(blkgrp2016data$B17017_002E)/sum(blkgrp2016data$B17017_001E)*100)),
-             round(((sum(blkgrp2000data$P092002)/sum(blkgrp2000data$P092001)*100)))
+years2 <- c("2000","2016")
+poverty <- c(
+             round(((sum(blkgrp2000data$P092002)/sum(blkgrp2000data$P092001)*100))),
+             round((sum(blkgrp2016data$B17017_002E)/sum(blkgrp2016data$B17017_001E)*100))
              )
 povertychartdata <- data.frame(years2,poverty)
 
