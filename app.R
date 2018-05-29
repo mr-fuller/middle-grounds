@@ -13,15 +13,21 @@ library(leaflet)
 #library(ggthemes)
 library(rgdal)
 library(plotly)
-source("popPyramid2000.r")
-source("popPyramid2010.r")
+Sys.setenv("plotly_username"="mrfuller460")
+Sys.setenv("plotly_api_key"="MQmwmskDMq39EWqcCr19")
+source("popPyramid2000.r", local = TRUE)
+source("popPyramid2010.r", local = TRUE)
 #source("acs2016demographics.R")
 #source("census2010demographics.R")
 #source("census2000demographics.R")
-source("racechart.R")
-source("unemploymentchart.R")
-source("povertychart.R")
-source("edchart.R")
+#source("racechart.R")
+#source("unemploymentchart.R")
+#source("povertychart.R")
+#source("edchart.R")
+raceplotly <- api_download_plot(7,"mrfuller460")
+unemploymentplotly <-  api_download_plot(9,"mrfuller460")
+povertyplotly <- api_download_plot(11,"mrfuller460")
+edplotly <- api_download_plot(13,"mrfuller460")
 blk2000 <- readOGR("data/middle_grounds_blk_2000.gpkg")
 blk2000 <- spTransform(blk2000, CRS("+init=epsg:4326"))
 #pyramid <- pyramid
@@ -109,27 +115,30 @@ server <- function(input, output) {
     
   
   output$pyramid <- renderPlot({
+    
+    
     print(
       pyramid2000)
   })
   output$pyramid2 <- renderPlot({
+    
     print(
       pyramid2010)
   })
   output$racechart <- renderPlotly({
-    print(racechart)
+    print(raceplotly)
   })
   
   output$unemploymentchart <- renderPlotly({
-    print(unemploymentchart)
+    print(unemploymentplotly)
   })
   
   output$povertychart <- renderPlotly({
-    print(povertychart)
+    print(povertyplotly)
   })
   
   output$edchart <- renderPlotly({
-    print(edchart)
+    print(edplotly)
   })
   
 }
