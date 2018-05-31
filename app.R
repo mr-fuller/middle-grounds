@@ -15,8 +15,10 @@ library(rgdal)
 library(plotly)
 Sys.setenv("plotly_username"="mrfuller460")
 Sys.setenv("plotly_api_key"="MQmwmskDMq39EWqcCr19")
-source("popPyramid2000.r", local = TRUE)
-source("popPyramid2010.r", local = TRUE)
+plotly2000pyramid <- api_download_plot(15,"mrfuller460")
+plotly2010pyramid <- api_download_plot(17,"mrfuller460")
+#source("popPyramid2000.r", local = TRUE)
+#source("popPyramid2010.r", local = TRUE)
 #source("acs2016demographics.R")
 #source("census2010demographics.R")
 #source("census2000demographics.R")
@@ -71,10 +73,10 @@ ui <- navbarPage("Middle Grounds District Demographics",
         South St. Clair Street, the point of beginning.")))),
   tabPanel("Population",fluidRow(
     column(6,
-           plotOutput("pyramid")
+           plotlyOutput("pyramid")
            ),
     column(6,
-           plotOutput("pyramid2")
+           plotlyOutput("pyramid2")
            )
         )
       ),
@@ -114,16 +116,11 @@ server <- function(input, output) {
   })
     
   
-  output$pyramid <- renderPlot({
-    
-    
-    print(
-      pyramid2000)
+  output$pyramid <- renderPlotly({
+    print(plotly2000pyramid)
   })
-  output$pyramid2 <- renderPlot({
-    
-    print(
-      pyramid2010)
+  output$pyramid2 <- renderPlotly({
+    print(plotly2010pyramid)
   })
   output$racechart <- renderPlotly({
     print(raceplotly)

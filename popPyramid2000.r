@@ -161,23 +161,32 @@ pyramid2000data <- pyramid2000data %>%
                         #C("0-4","5-9","10-14","15-19","20-24","25-29",
                          #             "30-34","35-39","40-44","45-49","50-54","55-59",
                           #            "60-64","65-69","70-74","75-79","80-84","85+"),ordered = TRUE),
-         group_est = ifelse(Sex == "Male",-group_est,group_est))
+         group_est = ifelse(Sex == "Male",-group_est,group_est),
+         abs_group_est = abs(group_est))
   
 
 #head(blk2000data)
 
 #View(blk2000data[,c(1:5,25:28)])
 
-pyramid2000 <- ggplot(data = pyramid2000data, aes(x = Age, y = group_est, fill = Sex))+
-  geom_bar(stat = "identity")+ #note that the options for geom_bar are 'identity' or 'count'
-  #geom_text(aes(x=Age, y = pop, label = group_est,hjust="outward"))+#, position = position_dodge(width = 0.9))+
-  scale_y_continuous(breaks = c(-5,0,5),labels = c("5","0","5"))+
-  coord_flip()+
-  
-  scale_fill_manual(values = c("red","navy"),guide = FALSE)+
-  annotate("text", x = 17, y = -5, label = "Total Population: 107",size = 5)+
-  labs(y = "Population",
-       title = "2000",
-       caption = "Source: US Census Bureau")+
-  theme(plot.title = element_text(size = 22))
-print(pyramid2000)
+# pyramid2000 <- ggplot(data = pyramid2000data, aes(x = Age, y = group_est, fill = Sex))+
+#   geom_bar(stat = "identity")+ #note that the options for geom_bar are 'identity' or 'count'
+#   #geom_text(aes(x=Age, y = pop, label = group_est,hjust="outward"))+#, position = position_dodge(width = 0.9))+
+#   scale_y_continuous(breaks = c(-5,0,5),labels = c("5","0","5"))+
+#   coord_flip()+
+#   
+#   scale_fill_manual(values = c("red","navy"),guide = FALSE)+
+#   annotate("text", x = 17, y = -5, label = "Total Population: 107",size = 5)+
+#   labs(y = "Population",
+#        title = "2000",
+#        caption = "Source: US Census Bureau")+
+#   theme(plot.title = element_text(size = 22))
+# print(pyramid2000)
+#plotly interactive graphic
+pyramid2000 <- plot_ly(pyramid2000data,x = pyramid2000data$group_est, y = pyramid2000data$Age, 
+        color = pyramid2000data$Sex, type = 'bar', orientation = 'h', colors = c('red','navy'),
+        hoverinfo = 'text+name',text = pyramid2000data$abs_group_est)%>% 
+  layout(bargap = 0.1, barmode = 'overlay',
+         annotations = list(x = -5, y = 17,text = "Total Population: 107",showarrow = FALSE),
+         xaxis = list(title = "Population 2000",tickmode = 'array', tickvals = c(-10,-5,0,5,10),ticktext = c("10","5","0","5","10")),
+         yaxis = list(title = "Age"))
