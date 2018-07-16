@@ -193,5 +193,6 @@ pyramid2010 <- plot_ly(pyramid2010data,x = pyramid2010data$group_est, y = pyrami
         hoverinfo = 'text+name',text = pyramid2010data$abs_group_est)%>% 
   layout(bargap = 0.1, barmode = 'overlay',
          annotations = list(x = -5, y = 17,text = "Total Population: 110",showarrow = FALSE),
-         xaxis = list(title = "Population 2010",tickmode = 'array', tickvals = c(-10,-5,0,5,10),ticktext = c("10","5","0","5","10")),
+         xaxis = list(title = "Population 2010",tickmode = 'array', tickvals = c(-10,-5,0,5,10),
+                      ticktext = c("10","5","0","5","10")),
          yaxis = list(title = "Age"))
